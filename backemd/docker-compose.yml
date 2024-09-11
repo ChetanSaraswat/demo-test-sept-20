@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  # postgres DB service
+  database:
+    image: postgres:16.1-alpine3.18
+    container_name: leave-management-database
+    restart: always
+    ports:
+      - ${DB_FORWARD_PORT:-5432}:5432
+    environment:
+      - POSTGRES_USER=${DB_USER:-"postgres"}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-"admin"}
+      - POSTGRES_DB=${DB_DATABASE:-"leave_management__db"}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - leave-management_network
+
+  #pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: leave-management-pgadmin
+    restart: always
+    ports:
+      - ${PGADMIN_FORWARD_PORT:-8888}:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - leave-management_network
+  
+  #mailHog
+  mailHog:
+    image: 'mailhog/mailhog:v1.0.1'
+    container_name: leave-management-mailhog
+    restart: always
+    ports:
+      - "${MAILHOG_FORWARD_PORT:-1026}:1025"
+      - "${MAILHOG_HTTP_FORWARD_PORT:-8026}:8025"
+    networks:
+      - leave-management_network
+      
+  # Backend service
+  backend:
+    container_name: leave-management-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dependency-base
+    ports:
+      - ${APP_FORWARD_PORT:-8080}:${APP_PORT:-8080}
+    volumes:
+      - .:/app
+    networks:
+      - leave-management_network
+    restart: on-failure
+    tty: true
+    stdin_open: true
+    expose:
+      - ${APP_PORT:-8080}
+  
+networks:
+  leave-management_network:
+    name: leave-management-shared-network
+    external: true
+
+volumes:
+  pg_data: {}
+  pgadmin_data: {}
+
+#docker network create leave-management-shared-network
