@@ -32,17 +32,6 @@ services:
     networks:
       - leave-management_network
   
-  #mailHog
-  mailHog:
-    image: 'mailhog/mailhog:v1.0.1'
-    container_name: leave-management-mailhog
-    restart: always
-    ports:
-      - "${MAILHOG_FORWARD_PORT:-1026}:1025"
-      - "${MAILHOG_HTTP_FORWARD_PORT:-8026}:8025"
-    networks:
-      - leave-management_network
-      
   # Backend service
   backend:
     container_name: leave-management-backend

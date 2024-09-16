@@ -1,11 +1,14 @@
-import React from 'react'
+const multer = require('multer');
+const path = require('path');
+const storage = multer.diskStorage({
+    destination: './uploads',
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, `${file.fieldname}` + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  });
 
-function multer.middleware() {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+const upload = multer({ storage: storage });
+const uploadImageMiddleware = upload.single('docs'); 
 
-export default multer.middleware
+module.exports = uploadImageMiddleware;
