@@ -1,11 +1,4 @@
-import React from 'react'
-
-function index() {
-  return (
-    <div>
-      
-    </div>
-  )
-}
-
-export default index
+const express = require("express");
+const router = express.Router();
+router.use("/auth", require("./auth.route"));
+module.exports = router
