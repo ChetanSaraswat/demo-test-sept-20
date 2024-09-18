@@ -5,14 +5,11 @@ const jwt =require("jsonwebtoken");
 
 exports.signInUser = async (req, res) => {
   try {
-    const response = await authService.loginUser(req, res);
-    let jwtPayload = { ...response }
-    delete jwtPayload?.role_details;
-
+    const response = await authService.loginUser(req.body);
+    let{password, ...jwtPayload }= response
     const token = jwt.sign(jwtPayload,process.env.JWT_SECRET,{ expiresIn : process.env.JWT_EXPIRY})
-    const userData = {...response};
+    const userData={...jwtPayload}
     userData['token'] = token;
-
     return handleSuccess(res,userData,httpStatusCode.OK)
   } 
   catch (error) {
@@ -23,9 +20,8 @@ exports.signInUser = async (req, res) => {
 
 exports.signUpUser = async (req, res) => {
     try {
-
-  
-      return handleSuccess(res,userData,httpStatusCode.OK)
+        const  response = await authService.signUpUser(req.body);
+       return handleSuccess(res,{message:'user created successfully'},httpStatusCode.OK)
     } 
     catch (error) {
       console.log('error: ', error.message);

@@ -75,17 +75,17 @@
     line-height: 20px !important;
     text-transform: unset !important;
     color:white !important;
-    background-color: #FF9863 !important;
+    background-color: red !important;
     margin-top: 20px !important;
 }
 .signInBtn:disabled{
-    background-color: #f3bea3 !important;
+    background-color: #c46a3d !important;
 }
 .loginRedirect{
     margin-left: auto !important;
     & a{
         text-decoration: unset !important;
-        color: #FF9863 !important;
+        color: #b67656 !important;
         font-weight: 600;
     }
 }

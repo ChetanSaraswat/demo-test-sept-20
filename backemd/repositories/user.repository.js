@@ -1,11 +1,35 @@
-import React from 'react'
+const { sequelize } = require("../config").db_connection;
+const { User } = require("../models");
+const { baseRepository } = require("./base.repository");
+class UserRepository extends baseRepository {
+  constructor(payload) {
+    super(payload);
+  }
 
-function user.repository() {
-  return (
-    <div>
-      
-    </div>
-  )
+      async createUser(payload) {
+          return await this.create(payload);
+      }
+
+      async getSpecificUser(field, attributes = {}) {
+        let criteria = field;
+        let include = [];
+        attributes = attributes;
+        let order = [];
+        return await this.findOne(
+          criteria,
+          include,
+          true,
+          attributes,
+          order
+        );
+      }
+
 }
-
-export default user.repository
+  
+  module.exports = {
+    userRepositoryObj: new UserRepository({
+      dbconnection: sequelize,
+      model: User,
+    }),
+  };
+  

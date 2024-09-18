@@ -2,9 +2,10 @@ import { Navigate, useRoutes, RouteObject } from "react-router-dom";
 import AppLayout from './layout/sidebarLayout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Profile from './pages/Profile/Profile';
-import Login from './pages/Login/login';
+
 import SignUp from './pages/SignUp/SignUp';
 import BaseLayout from './layout/baseLayout';
+import Login from "./pages/Login/Login";
 
 function Routes() {
   const isLogined = true;

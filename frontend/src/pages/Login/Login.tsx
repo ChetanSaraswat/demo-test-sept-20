@@ -88,7 +88,7 @@ function Login() {
     };
 
     return (
-        <Box className={'root'}>
+        <Box className={styles.root}>
             <Box className={styles.partition1}>
                 <img src={loginpng} alt='Login' className={styles.loginImg} />
             </Box>
