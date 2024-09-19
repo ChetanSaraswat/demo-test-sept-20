@@ -1,56 +1,74 @@
-import {  useState } from 'react';
-import { Box, Button, FormGroup, FormHelperText, FormLabel, InputBase, Typography, IconButton, InputAdornment, Select, MenuItem } from '@mui/material';
-import { Link } from 'react-router-dom';
-import styles from '../Login/login.module.css';
-import loginpng from '../../assets/Images/login.png';
-import { RemoveRedEye } from '@mui/icons-material';
-
+import  { useEffect, useState } from 'react';
+import { Box, Button, FormGroup, FormHelperText, 
+FormLabel, InputBase, Typography, IconButton, 
+InputAdornment } from '@mui/material';
+import styles from './login.module.css'
+import loginpng from '../../assets/Images/login.png'
+import { Link, useNavigate } from 'react-router-dom';
+import { login } from '../../feature/Auth/auth.action';
+import { useNotification } from '../../hooks/notification';
+import { useAppDispatch } from '../../hooks';
 type Data = {
-    name: string;
     email: string;
     password: string;
-    role: string;
-    rememberMe: boolean;
 };
 
-function SignUp() {
+function Login() {
     const initStage: Data = {
-        name: "",
         email: "",
         password: '',
-        role: "user",
-        rememberMe: false,
     };
 
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const showNotification= useNotification()
     const [data, setData] = useState<Data>(initStage);
-    const [error, setError] = useState<{ name: boolean; email: boolean; password: boolean }>({
-        name: false,
+    const [error, setError] = useState<{ email: boolean; password: boolean }>({
         email: false,
         password: false,
     });
     const [showPassword, setShowPassword] = useState(false);
+
+    useEffect(() => {
+        // You can add logic here if needed
+    }, []);
 
     const handleClickShowPassword = () => {
         setShowPassword((prev) => !prev);
     };
 
     const HandleLogin = async () => {
+        // Clear previous errors before making a new login attempt
         setError({
-            name: false,
             email: false,
             password: false,
         });
 
-        if (data.name === "" || data.email === "" || data.password === "") {
-            setError({
-                name: data.name === "",
+        if (data.email === "" || data.password === "") {
+            // Set errors if fields are empty
+            setError((prev) => ({
                 email: data.email === "",
                 password: data.password === "",
-            });
+            }));
             return;
         }
 
-        // Handle login logic here (e.g., API call)
+        if(data){
+            try {
+                const res:any = await dispatch(login(data));
+                console.log("res: ", res);
+                if (res?.meta?.requestStatus === "fulfilled") {
+                    showNotification(`${res?.payload?.data?.message}`, "success");
+                    navigate('/auth/login')
+                }
+                if (res?.meta?.requestStatus === "rejected") {
+                    showNotification(res?.error?.message || "Error", "error");
+                }
+              } catch (err) {
+                showNotification('error','error')
+                alert(err);
+              }
+            }
     };
 
     const validateEmail = (email: string) => {
@@ -81,38 +99,19 @@ function SignUp() {
                 <img src={loginpng} alt='Login' className={styles.loginImg} />
             </Box>
             <Box className={styles.partition2}>
-                <Typography className={styles.title}>Sign Up</Typography>
+                <Typography className={styles.title}>Sign In</Typography>
 
-                {/* Name Field */}
-                <FormGroup className={styles.inputWraper}>
-                    <FormLabel className={styles.inputlabel}>Name*</FormLabel>
-                    <InputBase
-                        type='text'
-                        className={`${styles.inputBox} ${error.name ? styles.errorInput : ''}`}
-                        value={data.name}
-                        onChange={(e) => {
-                            const value = e.target.value.trim();
-                            setError((prev) => ({ ...prev, name: value === "" }));
-                            setData((prev) => ({ ...prev, name: value }));
-                        }}
-                        inputProps={{
-                            maxLength: 50,
-                        }}
-                    />
-                    {error.name && (
-                        <FormHelperText className={styles.FormHelperText}>
-                            Name is required
-                        </FormHelperText>
-                    )}
-                </FormGroup>
-
-                {/* Email Field */}
                 <FormGroup className={styles.inputWraper}>
                     <FormLabel className={styles.inputlabel}>Email*</FormLabel>
                     <InputBase
                         type='email'
                         className={`${styles.inputBox} ${error.email ? styles.errorInput : ''}`}
                         value={data.email}
+                        onKeyDown={(e) => {
+                            if (e.key === ' ') {
+                                e.preventDefault();
+                            }
+                        }}
                         onChange={(e) => {
                             const value = e.target.value.replace(/\s+/g, '');
                             check_email(value);
@@ -120,6 +119,7 @@ function SignUp() {
                         }}
                         inputProps={{
                             maxLength: 50,
+                            title: 'No spaces allowed. Only letters, numbers, and special characters are allowed.',
                         }}
                     />
                     {error.email && (
@@ -128,6 +128,7 @@ function SignUp() {
                         </FormHelperText>
                     )}
                 </FormGroup>
+
                 <FormGroup className={styles.inputWraper}>
                     <FormLabel className={styles.inputlabel}>Password*</FormLabel>
                     <Box className={styles.passwordWrapper}>
@@ -136,17 +137,19 @@ function SignUp() {
                             className={`${styles.inputBox} ${error.password ? styles.errorInput : ''}`}
                             value={data.password}
                             onChange={(e) => {
-                                const value = e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*()_+={}\[\]:;<>,.?~\\/-]/g,'');
+                                const value = e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*()_+={}\[\]:;<>,.?~\\/-]/g, '');
                                 check_password(value);
                                 setData((prev) => ({ ...prev, password: value }));
                             }}
                             inputProps={{
                                 maxLength: 50,
+                                title: 'No spaces allowed. Only letters, numbers, and special characters are allowed.',
                             }}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton onClick={handleClickShowPassword} edge="end">
-                                        <RemoveRedEye/>
+                                        {/* Uncomment and use icons if necessary */}
+                                        {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
                                     </IconButton>
                                 </InputAdornment>
                             }
@@ -159,35 +162,22 @@ function SignUp() {
                     )}
                 </FormGroup>
 
-                {/* Role Select */}
-                <FormGroup className={styles.inputWraper}>
-                    <FormLabel className={styles.inputlabel}>Role*</FormLabel>
-                    <Select
-                        value={data.role}
-                        onChange={(e) => setData((prev) => ({ ...prev, role: e.target.value as string }))}
-                        className={styles.inputBox}
-                    >
-                        <MenuItem value="user">User</MenuItem>
-                        <MenuItem value="admin">Admin</MenuItem>
-                    </Select>
-                </FormGroup>
+                <Box className={styles.rememberMeWrap}>
+                    <Typography className={`${styles.rememberMeText} ${styles.loginRedirect}`}>
+                        New User?<Link to='/auth/signup'> Signup here</Link>
+                    </Typography>
+                </Box>
 
                 <Button
                     className={styles.signInBtn}
                     onClick={HandleLogin}
-                    disabled={data.email.length === 0 || data.password.length === 0 || data.name.length === 0}
+                    disabled={data.email.length === 0 || data.password.length === 0}
                 >
-                    Sign Up
+                    Sign In
                 </Button>
-
-                <Box className={styles.rememberMeWrap}>
-                    <Typography className={`${styles.rememberMeText} ${styles.loginRedirect}`}>
-                        Existing User?<Link to='/auth/signup'> Signin here</Link>
-                    </Typography>
-                </Box>
             </Box>
         </Box>
     );
 }
 
-export default SignUp;
+export default Login;

@@ -19,6 +19,7 @@ exports.signInUser = async (req, res) => {
 };
 
 exports.signUpUser = async (req, res) => {
+  console.log("req: ", req);
     try {
         const  response = await authService.signUpUser(req.body);
        return handleSuccess(res,{message:'user created successfully'},httpStatusCode.OK)

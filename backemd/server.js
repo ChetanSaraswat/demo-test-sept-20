@@ -23,8 +23,4 @@ app.listen(global.port, () => {
   const NODE_ENV= process.env.NODE_ENV;
   console.log(`${NODE_ENV} Server is listening on port ${global.port}`);
 });
-APP_PORT = 8081
-APP_FORWARD_PORT = 8081
-NODE_ENV = "development"
-SALT_ROUNDS = 10
 module.exports = app;

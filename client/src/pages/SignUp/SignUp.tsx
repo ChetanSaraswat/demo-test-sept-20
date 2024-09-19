@@ -1,68 +1,75 @@
-import  { useEffect, useState } from 'react';
-import { Box, Button, FormGroup, FormHelperText, FormLabel, InputBase, Typography, IconButton, InputAdornment } from '@mui/material';
-import { Link } from 'react-router-dom';
-import styles from './login.module.css'
-import loginpng from '../../assets/Images/login.png'
+import {  useState } from 'react';
+import { Box, Button, FormGroup, FormHelperText, FormLabel, InputBase, Typography, IconButton, InputAdornment, Select, MenuItem } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+import styles from '../Login/login.module.css';
+import loginpng from '../../assets/Images/login.png';
+import { RemoveRedEye } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import {  signup } from '../../feature/Auth/auth.action';
+import { AppDispatch } from '../../store/store';
+import { useAppDispatch } from '../../hooks';
+import { useNotification } from '../../hooks/notification';
+
 type Data = {
+    name: string;
     email: string;
     password: string;
-    rememberMe: boolean;
+    // role: string;
 };
 
-function Login() {
+function SignUp() {
     const initStage: Data = {
+        name: "",
         email: "",
         password: '',
-        rememberMe: false,
+        // role: "user",
     };
-
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const showNotification= useNotification()
     const [data, setData] = useState<Data>(initStage);
-    const [error, setError] = useState<{ email: boolean; password: boolean }>({
+    const [error, setError] = useState<{ name: boolean; email: boolean; password: boolean }>({
+        name: false,
         email: false,
         password: false,
     });
     const [showPassword, setShowPassword] = useState(false);
 
-    useEffect(() => {
-        // You can add logic here if needed
-    }, []);
-
     const handleClickShowPassword = () => {
         setShowPassword((prev) => !prev);
     };
 
-    const HandleLogin = async () => {
-        // Clear previous errors before making a new login attempt
+    const HandleSignUp = async () => {
         setError({
+            name: false,
             email: false,
             password: false,
         });
 
-        if (data.email === "" || data.password === "") {
-            // Set errors if fields are empty
-            setError((prev) => ({
+        if (data.name === "" || data.email === "" || data.password === "") {
+            setError({
+                name: data.name === "",
                 email: data.email === "",
                 password: data.password === "",
-            }));
+            });
             return;
         }
-
-        // Uncomment and adjust the following lines according to your implementation
-        // try {
-        //     const res = await dispatch(LoginApi({ email: data.email, password: data.password }));
-        //     if (res?.meta?.requestStatus === "fulfilled") {
-        //         showNotification("Login successfully", "success");
-        //     }
-        //     if (res?.meta?.requestStatus === "rejected") {
-        //         showNotification(res?.payload?.response?.data || "Error", "error");
-        //         if (res?.payload?.response?.data) {
-        //             setError((prev) => ({ ...prev, email: false, password: false }));
-        //         }
-        //     }
-        // } catch (error) {
-        //     showNotification("Error", "error");
-        //     console.log('error: ', error);
-        // }
+        if(data){
+            try {
+                const res:any = await dispatch(signup(data));
+                console.log("res: ", res);
+                if (res?.meta?.requestStatus === "fulfilled") {
+                    showNotification(`${res?.payload?.data?.message}`, "success");
+                    navigate('/auth/login')
+                }
+                if (res?.meta?.requestStatus === "rejected") {
+                    showNotification(res?.error?.message || "Error", "error");
+                }
+              } catch (err) {
+                showNotification('error','error')
+                alert(err);
+              }
+            }
     };
 
     const validateEmail = (email: string) => {
@@ -78,7 +85,7 @@ function Login() {
     };
 
     const check_password = (data: string) => {
-        const isValid = data !== "" && validatePassword(data) && data.length >= 6;
+        const isValid = data !== "" && validatePassword(data) && data.length >= 8;
         setError((prev) => ({ ...prev, password: !isValid }));
     };
 
@@ -93,19 +100,35 @@ function Login() {
                 <img src={loginpng} alt='Login' className={styles.loginImg} />
             </Box>
             <Box className={styles.partition2}>
-                <Typography className={styles.title}>Sign In</Typography>
+                <Typography className={styles.title}>Sign Up</Typography>
 
+                <FormGroup className={styles.inputWraper}>
+                    <FormLabel className={styles.inputlabel}>Name*</FormLabel>
+                    <InputBase
+                        type='text'
+                        className={`${styles.inputBox} ${error.name ? styles.errorInput : ''}`}
+                        value={data.name}
+                        onChange={(e) => {
+                            const value = e.target.value.trim();
+                            setError((prev) => ({ ...prev, name: value === "" }));
+                            setData((prev) => ({ ...prev, name: value }));
+                        }}
+                        inputProps={{
+                            maxLength: 50,
+                        }}
+                    />
+                    {error.name && (
+                        <FormHelperText className={styles.FormHelperText}>
+                            Name is required
+                        </FormHelperText>
+                    )}
+                </FormGroup>
                 <FormGroup className={styles.inputWraper}>
                     <FormLabel className={styles.inputlabel}>Email*</FormLabel>
                     <InputBase
                         type='email'
                         className={`${styles.inputBox} ${error.email ? styles.errorInput : ''}`}
                         value={data.email}
-                        onKeyDown={(e) => {
-                            if (e.key === ' ') {
-                                e.preventDefault();
-                            }
-                        }}
                         onChange={(e) => {
                             const value = e.target.value.replace(/\s+/g, '');
                             check_email(value);
@@ -113,7 +136,6 @@ function Login() {
                         }}
                         inputProps={{
                             maxLength: 50,
-                            title: 'No spaces allowed. Only letters, numbers, and special characters are allowed.',
                         }}
                     />
                     {error.email && (
@@ -122,7 +144,6 @@ function Login() {
                         </FormHelperText>
                     )}
                 </FormGroup>
-
                 <FormGroup className={styles.inputWraper}>
                     <FormLabel className={styles.inputlabel}>Password*</FormLabel>
                     <Box className={styles.passwordWrapper}>
@@ -131,19 +152,17 @@ function Login() {
                             className={`${styles.inputBox} ${error.password ? styles.errorInput : ''}`}
                             value={data.password}
                             onChange={(e) => {
-                                const value = e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*()_+={}\[\]:;<>,.?~\\/-]/g, '');
+                                const value = e.target.value.replace(/[^a-zA-Z0-9!@#$%^&*()_+={}\[\]:;<>,.?~\\/-]/g,'');
                                 check_password(value);
                                 setData((prev) => ({ ...prev, password: value }));
                             }}
                             inputProps={{
                                 maxLength: 50,
-                                title: 'No spaces allowed. Only letters, numbers, and special characters are allowed.',
                             }}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton onClick={handleClickShowPassword} edge="end">
-                                        {/* Uncomment and use icons if necessary */}
-                                        {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
+                                        <RemoveRedEye/>
                                     </IconButton>
                                 </InputAdornment>
                             }
@@ -156,22 +175,35 @@ function Login() {
                     )}
                 </FormGroup>
 
-                <Box className={styles.rememberMeWrap}>
-                    <Typography className={`${styles.rememberMeText} ${styles.loginRedirect}`}>
-                        New User?<Link to='/auth/signup'> Signup here</Link>
-                    </Typography>
-                </Box>
+                {/* Role Select */}
+                {/* <FormGroup className={styles.inputWraper}>
+                    <FormLabel className={styles.inputlabel}>Role*</FormLabel>
+                    <Select
+                        value={data.role}
+                        onChange={(e) => setData((prev) => ({ ...prev, role: e.target.value as string }))}
+                        className={styles.inputBox}
+                    >
+                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="admin">Admin</MenuItem>
+                    </Select>
+                </FormGroup> */}
 
                 <Button
                     className={styles.signInBtn}
-                    onClick={HandleLogin}
-                    disabled={data.email.length === 0 || data.password.length === 0}
+                    onClick={HandleSignUp}
+                    disabled={data.email.length === 0 || data.password.length === 0 || data.name.length === 0}
                 >
-                    Sign In
+                    Sign Up
                 </Button>
+
+                <Box className={styles.rememberMeWrap}>
+                    <Typography className={`${styles.rememberMeText} ${styles.loginRedirect}`}>
+                        Existing User?<Link to='/auth/signup'> Signin here</Link>
+                    </Typography>
+                </Box>
             </Box>
         </Box>
     );
 }
 
-export default Login;
+export default SignUp;
