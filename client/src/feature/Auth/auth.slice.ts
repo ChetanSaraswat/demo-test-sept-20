@@ -27,8 +27,8 @@ const initialState: InitialStateType = {
   error: '',
   success: false,
   logged: localStorage.getItem('logged') === 'true',
-  userdata:localStorage.getItem('user'),
-  user: null, // Initialize as null
+  userdata:'',
+  user: JSON.parse(localStorage.getItem('user') ?? '{}'), // Initialize as null
 };
 
 export const authSlice = createSlice({

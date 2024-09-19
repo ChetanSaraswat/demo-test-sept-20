@@ -24,7 +24,18 @@ class UserRepository extends baseRepository {
         );
       }
 
-}
+    async getUsers(query, limit, offset, flag) {
+        return await this.model.findAll({
+            where: query,
+            offset: offset,
+            limit: limit,
+            order: [[flag, 'ASC']],
+            collation: { locale: 'en', strength: 2 }, 
+        });
+    }
+
+  }
+
   
   module.exports = {
     userRepositoryObj: new UserRepository({

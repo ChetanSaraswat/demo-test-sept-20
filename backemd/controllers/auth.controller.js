@@ -28,3 +28,16 @@ exports.signUpUser = async (req, res) => {
       return handleError(res, error);
     }
   };
+
+exports.getUserData = async (req, res) => {
+    try {
+        const { page, size, flag, designation, search } = req.query;
+        
+        const userData = await authService.getUserData({ page, size, flag, designation, search });
+        
+        return handleSuccess(res, userData, httpStatusCode.OK);
+    } catch (error) {
+        console.error('Error:', error.message);
+        return handleError(res, error);
+    }
+};

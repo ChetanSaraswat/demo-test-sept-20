@@ -13,6 +13,11 @@ exports.baseRepository = class baseRepository {
     return await this.model.bulkCreate(payload, options);
   }
 
+  async count(query) {
+    return await this.model.count({ where: query });
+  }
+
+
   async findOne(criteria, include = [], paranoid = true, attributes, order = [], transaction) {
     return await this.model.findOne({
       where: criteria,
@@ -25,7 +30,7 @@ exports.baseRepository = class baseRepository {
     });
   }
 
-  async findAll(criteria, include = [], paranoid = true, attributes, offset, limit, order = [], group = []) {
+  async findAll(criteria, include = [], paranoid = true, attributes, offset, limit, order = [], group = [],collation={}) {
     return await this.model.findAll({
       where: criteria,
       include: include,
@@ -35,6 +40,7 @@ exports.baseRepository = class baseRepository {
       limit: limit,
       order: order,
       group,
+      collation:collation
     });
   }
 
