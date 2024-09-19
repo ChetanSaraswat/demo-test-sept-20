@@ -16,9 +16,6 @@ const AppLayout: React.FC = () => {
     <Box display="flex">
       {/* <Navbar onToggleSidebar={toggleSidebar} /> */}
       <Sidebar />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Outlet />
-      </Box>
     </Box>
   );
 };

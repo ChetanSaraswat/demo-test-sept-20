@@ -14,13 +14,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import { Link, Outlet } from 'react-router-dom';
 import { Button } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { logOut } from '../../../feature/Auth/auth.slice';
+import { RootState } from '../../../store/store';
+import { useNotification } from '../../../hooks/notification';
 
 const drawerWidth = 240;
 
@@ -50,7 +51,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -108,6 +108,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function Sidebar() {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const showNotification=useNotification()
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -117,31 +119,17 @@ export default function Sidebar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const islogged = useAppSelector((state:RootState)=>state.auth?.logged)
+  const handleLogOut = () => {
+   const res =  dispatch(logOut())
+   if(!islogged){
+    showNotification('Logged out  successfully', "success");
+   }
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      {/* <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={[
-              {
-                marginRight: 5,
-              },
-              open && { display: 'none' },
-            ]}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
-          </Typography>
-        </Toolbar>
-      </AppBar> */}
       <AppBar position="fixed" open={open}>
       <Toolbar>
       <IconButton
@@ -161,8 +149,8 @@ export default function Sidebar() {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           App
         </Typography>
-        <Button color="inherit"  sx={{textTransform:'none'}} >Profile</Button>
-        <Button color="inherit" sx={{textTransform:'none'}} >Logout</Button>
+        <Button color="inherit"  sx={{textTransform:'none'}}  >Profile</Button>
+        <Button color="inherit" sx={{textTransform:'none'}} onClick={handleLogOut} >Logout</Button>
       </Toolbar>
     </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -187,9 +175,9 @@ export default function Sidebar() {
         </ListItem>
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box className='sidebar outlet' component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-   <Outlet/>
+         <Outlet/>
       </Box>
     </Box>
   );

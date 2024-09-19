@@ -28,7 +28,8 @@ const authRequest = axios.create({
     async (payload: loginTypes) => {
       try {
         const response = await axios.post('http://localhost:8080/auth/sign-in', payload);
-        console.log("response: ", response);
+        localStorage.setItem('user',JSON.stringify(response.data) );
+        localStorage.setItem('logged', 'true');
         return response;
       }catch (error) {
         console.log("error: ", error);

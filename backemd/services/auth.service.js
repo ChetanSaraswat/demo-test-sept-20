@@ -1,5 +1,7 @@
 const { customError } = require("../libs/error");
 const { userRepositoryObj } = require("../repositories/user.repository");
+const {faltukapusher}= require("../pusher");
+
 const bcrypt = require("bcrypt");
 
 exports.loginUser = async (body) => {
@@ -28,7 +30,7 @@ exports.signUpUser=  async (body) => {
         throw  new customError("Please fill all the fields", 400);
       }
       const user  = await userRepositoryObj.getSpecificUser({email})
-      if(user){
+      if(user && user.email){
         throw new customError("User already exist", 400)
       }
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,6 +39,7 @@ exports.signUpUser=  async (body) => {
       if(!response){
         throw new customError("User not created", 400)
       }
+      await faltukapusher('user created ollalalala')
       return response
   }
   catch(error){

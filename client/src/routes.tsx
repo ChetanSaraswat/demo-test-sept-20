@@ -6,9 +6,11 @@ import Profile from './pages/Profile/Profile';
 import SignUp from './pages/SignUp/SignUp';
 import BaseLayout from './layout/baseLayout';
 import Login from "./pages/Login/Login";
+import { useAppSelector } from "./hooks";
+import { RootState } from "./store/store";
 
 function Routes() {
-  const isLogined = false;
+  const isLogined = useAppSelector((state:RootState)=>state.auth?.logged) ;
 
   const routes: RouteObject[] = [
     {

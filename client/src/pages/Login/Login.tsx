@@ -58,8 +58,8 @@ function Login() {
                 const res:any = await dispatch(login(data));
                 console.log("res: ", res);
                 if (res?.meta?.requestStatus === "fulfilled") {
-                    showNotification(`${res?.payload?.data?.message}`, "success");
-                    navigate('/auth/login')
+                    showNotification('Logged in successfully', "success");
+                    navigate('/')
                 }
                 if (res?.meta?.requestStatus === "rejected") {
                     showNotification(res?.error?.message || "Error", "error");

@@ -15,9 +15,9 @@ const app = express();
  app.use(cors());
 // app.use('/uploads', express.static('uploads')) 
  app.use('/', require('./routes'));
-// process.on("uncaughtException", (err) => {
-//   console.log("uncaught exception", err);
-// });
+process.on("uncaughtException", (err) => {
+  console.log("uncaught exception", err);
+});
 
 app.listen(global.port, () => {
   const NODE_ENV= process.env.NODE_ENV;

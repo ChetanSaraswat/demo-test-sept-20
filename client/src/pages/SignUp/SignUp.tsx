@@ -4,9 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from '../Login/login.module.css';
 import loginpng from '../../assets/Images/login.png';
 import { RemoveRedEye } from '@mui/icons-material';
-import { useDispatch } from 'react-redux';
-import {  signup } from '../../feature/Auth/auth.action';
-import { AppDispatch } from '../../store/store';
+import {  signup } from '../../feature/Auth/auth.action'
 import { useAppDispatch } from '../../hooks';
 import { useNotification } from '../../hooks/notification';
 

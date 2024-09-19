@@ -60,3 +60,18 @@ exports.sendInboxInRealTime = async (inboxList, user_id) => {
     throw error;
   }
 };
+
+exports.faltukapusher = async ( message) => {
+  try {
+    console.log('message: ', message);
+    const channelName = 'hello-world';
+    console.log('channelName: ', channelName);
+    const eventName = 'hewwlo-to';
+    console.log('eventName: ', eventName);
+    return await pusher.trigger(channelName, eventName, {message});
+  }
+  catch (error) {
+    console.log('error: ', error);
+    throw error;
+  }
+};

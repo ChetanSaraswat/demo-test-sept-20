@@ -1,8 +1,6 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const { handleError } = require("../libs/error");
-const { employeeRepositoryObj } = require("../repositories/employee.repository");
-const { adminRepositoryObj } = require("../repositories/admin.repository");
 const { userRepositoryObj } = require("../repositories/user.repository");
 const authenticateJWT = async (req, res, next) => {
   try {
