@@ -8,43 +8,43 @@
 //   cluster: process.env.PUSHER_CLUSTER,
 // });
 
-// exports.sendMessageInRealTime = async (senderId, receiverId, message, action) => {
+// exports.sendOrderUpdateInRealTime = async (senderId, receiverId, OrderUpdate, action) => {
 //   try {
 //     console.log('senderId: ', senderId);
-//     const channelName = `${channels.REAL_TIME_CHAT_CHANNEL}`;
-//     const eventName = `${events.REAL_TIME_MESSAGE_SENT_EVENT}-${senderId}-${receiverId}`;
-//     return await pusher.trigger(channelName, eventName, {message, action,senderId});
+//     const channelName = `${channels.REAL_TIME_Order_CHANNEL}`;
+//     const eventName = `${events.REAL_TIME_OrderUpdate_SENT_EVENT}-${senderId}-${receiverId}`;
+//     return await pusher.trigger(channelName, eventName, {OrderUpdate, action,senderId});
 //   }
 //   catch (error) {
 //     throw error;
 //   }
 // };
 
-// exports.updateMessageInRealTime = async (message_id, message, action) => {
+// exports.updateOrderUpdateInRealTime = async (OrderUpdate_id, OrderUpdate, action) => {
 //   try {
-//     const channelName = `${channels.REAL_TIME_CHAT_CHANNEL}`;
-//     const eventName = `${events.REAL_TIME_MESSAGE_UPDATED_EVENT}-${message_id}`;
-//     return await pusher.trigger(channelName, eventName, { message, action });
+//     const channelName = `${channels.REAL_TIME_Order_CHANNEL}`;
+//     const eventName = `${events.REAL_TIME_OrderUpdate_UPDATED_EVENT}-${OrderUpdate_id}`;
+//     return await pusher.trigger(channelName, eventName, { OrderUpdate, action });
 //   } catch (error) {
 //     throw error;
 //   }
 // };
 
-// exports.deleteMessageInRealTime = async (message_id, message, action) => {
+// exports.deleteOrderUpdateInRealTime = async (OrderUpdate_id, OrderUpdate, action) => {
 //   try {
-//     const channelName = `${channels.REAL_TIME_CHAT_CHANNEL}`;
-//     const eventName = `${events.REAL_TIME_MESSAGE_DELETED_EVENT}-${message_id}`;
-//     return await pusher.trigger(channelName, eventName, { message, action });
+//     const channelName = `${channels.REAL_TIME_Order_CHANNEL}`;
+//     const eventName = `${events.REAL_TIME_OrderUpdate_DELETED_EVENT}-${OrderUpdate_id}`;
+//     return await pusher.trigger(channelName, eventName, { OrderUpdate, action });
 //   } catch (error) {
 //     throw error;
 //   }
 // };
 
-// exports.deleteChatInRealTime = async () => {
+// exports.deleteOrderInRealTime = async () => {
 //   try {
-//     const channelName = `${channels.REAL_TIME_CHAT_CHANNEL}`;
-//     const eventName = `${events.REAL_TIME_CHAT_EVENT}-${senderId}-${receiverId}`;
-//     return await pusher.trigger(channelName, eventName, { message, action });
+//     const channelName = `${channels.REAL_TIME_Order_CHANNEL}`;
+//     const eventName = `${events.REAL_TIME_Order_EVENT}-${senderId}-${receiverId}`;
+//     return await pusher.trigger(channelName, eventName, { OrderUpdate, action });
 //   } catch (error) {
 //     throw error;
 //   }
@@ -53,22 +53,22 @@
 // exports.sendInboxInRealTime = async (inboxList, user_uuid) => {
 //   try {
 //     console.log('inboxList: ', inboxList);
-//     const channelName = `${channels.REAL_TIME_CHAT_CHANNEL}`;
+//     const channelName = `${channels.REAL_TIME_Order_CHANNEL}`;
 //     const eventName = `${events.REAL_TIME_INBOX_EVENT}-${user_uuid}`;
-//     return await pusher.trigger(channelName, eventName, { list: inboxList, action: pusherAction.CHAT_LIST });
+//     return await pusher.trigger(channelName, eventName, { list: inboxList, action: pusherAction.Order_LIST });
 //   } catch (error) {
 //     throw error;
 //   }
 // };
 
-// exports.faltukapusher = async ( message) => {
+// exports.faltukapusher = async ( OrderUpdate) => {
 //   try {
-//     console.log('message: ', message);
+//     console.log('OrderUpdate: ', OrderUpdate);
 //     const channelName = 'hello-world';
 //     console.log('channelName: ', channelName);
 //     const eventName = 'hewwlo-to';
 //     console.log('eventName: ', eventName);
-//     return await pusher.trigger(channelName, eventName, {message});
+//     return await pusher.trigger(channelName, eventName, {OrderUpdate});
 //   }
 //   catch (error) {
 //     console.log('error: ', error);
