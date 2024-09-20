@@ -83,6 +83,7 @@ const Category = sequelize.define('Category', {
         key: 'id',
       },
       allowNull: false,
+      
     },
     rating: {
       type: Sequelize.INTEGER, // rating 1 to 5

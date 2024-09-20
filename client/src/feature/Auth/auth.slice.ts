@@ -3,10 +3,11 @@ import { login, signup } from "./auth.action";
 
 export type UserInitialState = {
   token: string | null; // Consider allowing null if not logged in
-  user_id: string;
+  user_uuid: string;
   name: string;
   email: string;
-  bio: string;
+  role:string;
+  phone:string
 };
 
 export type InitialStateType = {

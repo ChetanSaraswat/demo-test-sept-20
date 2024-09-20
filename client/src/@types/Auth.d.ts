@@ -11,7 +11,7 @@ export interface signUpTypes {
 
 export interface loginApiResponse {
       token: string; 
-      user_id: string;
+      user_uuid: string;
       email: string;
       name:string;
       bio:string

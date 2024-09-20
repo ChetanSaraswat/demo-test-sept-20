@@ -1,4 +1,8 @@
 'use strict';
+
+const {User} = require("../models");
+console.log('User: ', User);
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('users', {
@@ -8,7 +12,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      user_id: {
+      user_uuid: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         unique: true,
@@ -46,9 +50,19 @@ module.exports = {
         type: Sequelize.STRING(255),
         allowNull: false,
       },
-      bio: {
-        type: Sequelize.STRING(255),
+      role: {
+        type: Sequelize.ENUM(...Object.values(User.roles)),
+        validate: {
+          isIn: {
+            args: [Object.values(User.roles)],
+          },
+        },
         allowNull: true,
+      },
+      phone: {
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        unique: true,
       },
       created_at: {
         allowNull: false,

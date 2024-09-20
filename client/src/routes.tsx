@@ -8,9 +8,26 @@ import BaseLayout from './layout/baseLayout';
 import Login from "./pages/Login/Login";
 import { useAppSelector } from "./hooks";
 import { RootState } from "./store/store";
+import DashboardAdmin from "./pages/Dashboard/DashboardAdmin";
+import DashboardUser from "./pages/Dashboard/DashboardUser";
 
 function Routes() {
   const isLogined = useAppSelector((state:RootState)=>state.auth?.logged) ;
+  const user = useAppSelector((state:RootState)=> state.auth.user)
+  const getDashboardComponent = () => {
+    switch (user && user.role) {
+      case 'ADMIN':
+        return <DashboardAdmin />;
+      case 'CUSTOMER':
+        return <DashboardUser/>;
+        case 'RESTAURANT':
+          return <Dashboard/>;
+      // Add more roles and dashboards as needed
+      default:
+        return <Navigate to="/auth/login" />; // If the role is invalid or undefined, redirect to login
+    }
+  };
+
 
   const routes: RouteObject[] = [
     {
@@ -33,7 +50,7 @@ function Routes() {
       children: [
         {
           path: '/',
-          element: <Dashboard />
+          element: getDashboardComponent()
         },
         {
           path: 'profile',

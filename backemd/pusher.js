@@ -50,11 +50,11 @@
 //   }
 // };
 
-// exports.sendInboxInRealTime = async (inboxList, user_id) => {
+// exports.sendInboxInRealTime = async (inboxList, user_uuid) => {
 //   try {
 //     console.log('inboxList: ', inboxList);
 //     const channelName = `${channels.REAL_TIME_CHAT_CHANNEL}`;
-//     const eventName = `${events.REAL_TIME_INBOX_EVENT}-${user_id}`;
+//     const eventName = `${events.REAL_TIME_INBOX_EVENT}-${user_uuid}`;
 //     return await pusher.trigger(channelName, eventName, { list: inboxList, action: pusherAction.CHAT_LIST });
 //   } catch (error) {
 //     throw error;

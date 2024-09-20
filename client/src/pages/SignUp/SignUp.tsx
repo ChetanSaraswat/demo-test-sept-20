@@ -2,7 +2,7 @@ import {  useState } from 'react';
 import { Box, Button, FormGroup, FormHelperText, FormLabel, InputBase, Typography, IconButton, InputAdornment, Select, MenuItem } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../Login/login.module.css';
-import loginpng from '../../assets/Images/login.png';
+import loginpng from '../../assets/Images/food-delivery-service-fast-food-delivery-scooter-delivery-service-illustration_67394-869.png';
 import { RemoveRedEye } from '@mui/icons-material';
 import {  signup } from '../../feature/Auth/auth.action'
 import { useAppDispatch } from '../../hooks';
@@ -12,7 +12,8 @@ type Data = {
     name: string;
     email: string;
     password: string;
-    // role: string;
+    role: string;
+    phone:string;
 };
 
 function SignUp() {
@@ -20,16 +21,19 @@ function SignUp() {
         name: "",
         email: "",
         password: '',
-        // role: "user",
+        role: "",
+        phone:'',
     };
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const showNotification= useNotification()
     const [data, setData] = useState<Data>(initStage);
-    const [error, setError] = useState<{ name: boolean; email: boolean; password: boolean }>({
+    const [error, setError] = useState<{ name: boolean; email: boolean; password: boolean;role:boolean;phone:boolean }>({
         name: false,
         email: false,
         password: false,
+        role:false,
+        phone:false
     });
     const [showPassword, setShowPassword] = useState(false);
 
@@ -42,13 +46,17 @@ function SignUp() {
             name: false,
             email: false,
             password: false,
+            role:false,
+            phone:false
         });
 
-        if (data.name === "" || data.email === "" || data.password === "") {
+        if (data.name === "" || data.email === "" || data.password === "" || data.role === "" || data.phone==="") {
             setError({
                 name: data.name === "",
                 email: data.email === "",
                 password: data.password === "",
+                role:data.role==="",
+                phone:data.phone===""
             });
             return;
         }
@@ -94,7 +102,7 @@ function SignUp() {
 
     return (
         <Box className={styles.root}>
-            <Box className={styles.partition1}>
+            <Box className={styles.partition1} mr={'50px'}>
                 <img src={loginpng} alt='Login' className={styles.loginImg} />
             </Box>
             <Box className={styles.partition2}>
@@ -143,6 +151,26 @@ function SignUp() {
                     )}
                 </FormGroup>
                 <FormGroup className={styles.inputWraper}>
+                    <FormLabel className={styles.inputlabel}>Phone*</FormLabel>
+                    <InputBase
+                        type='text'
+                        className={`${styles.inputBox} ${error.phone ? styles.errorInput : ''}`}
+                        value={data.phone}
+                        onChange={(e) => {
+                            const value = e.target.value.replace(/\s+/g, '');
+                            setData((prev) => ({ ...prev, phone: value }));
+                        }}
+                        inputProps={{
+                            maxLength: 50,
+                        }}
+                    />
+                    {error.phone && (
+                        <FormHelperText className={styles.FormHelperText}>
+                            {data.phone === "" ? "Phone no. is required" : "Invalif"}
+                        </FormHelperText>
+                    )}
+                </FormGroup>
+                <FormGroup className={styles.inputWraper}>
                     <FormLabel className={styles.inputlabel}>Password*</FormLabel>
                     <Box className={styles.passwordWrapper}>
                         <InputBase
@@ -173,23 +201,24 @@ function SignUp() {
                     )}
                 </FormGroup>
 
-                {/* Role Select */}
-                {/* <FormGroup className={styles.inputWraper}>
+             
+                 <FormGroup className={styles.inputWraper}>
                     <FormLabel className={styles.inputlabel}>Role*</FormLabel>
                     <Select
                         value={data.role}
                         onChange={(e) => setData((prev) => ({ ...prev, role: e.target.value as string }))}
                         className={styles.inputBox}
                     >
-                        <MenuItem value="user">User</MenuItem>
-                        <MenuItem value="admin">Admin</MenuItem>
+                        <MenuItem value="CUSTOMER">Customer</MenuItem>
+                        <MenuItem value="RESTAURANT">Restaurant</MenuItem>
+                        <MenuItem value="ADMIN">Admin</MenuItem>
                     </Select>
-                </FormGroup> */}
+                </FormGroup>
 
                 <Button
                     className={styles.signInBtn}
                     onClick={HandleSignUp}
-                    disabled={data.email.length === 0 || data.password.length === 0 || data.name.length === 0}
+                    disabled={data.email.length === 0 || data.password.length === 0 || data.name.length === 0 || data.role.length === 0}
                 >
                     Sign Up
                 </Button>

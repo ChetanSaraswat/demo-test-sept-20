@@ -26,8 +26,8 @@ exports.loginUser = async (body) => {
 
 exports.signUpUser=  async (body) => {
   try {
-      const {name , email , password} = body;
-      if(!name || !email || !password){
+      const {name , email , password,role,phone} = body;
+      if(!name || !email || !password || !role || !phone){
         throw  new customError("Please fill all the fields", 400);
       }
       const user  = await userRepositoryObj.getSpecificUser({email})
@@ -40,7 +40,6 @@ exports.signUpUser=  async (body) => {
       if(!response){
         throw new customError("User not created", 400)
       }
-      // await faltukapusher('user created ollalalala')
       return response
   }
   catch(error){
